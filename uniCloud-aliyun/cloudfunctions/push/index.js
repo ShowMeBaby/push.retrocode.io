@@ -1,16 +1,27 @@
 'use strict';
 const UniPush = require('uni-push')
 exports.main = async (event, context) => {
+  const res = {
+    status: 'fail',
+    message: 'message字段为必须值'
+  }
+
+  const db = uniCloud.database();
+  const collection = db.collection('usercid');
+  let usercids = await collection.orderBy("_id", "desc").get()
+  if (usercids.data.length == 0) {
+    return res
+  }
+
+  const clientid = usercids.data[0].cid;
+
   let {
     title,
     desc,
     message,
   } = event.queryStringParameters;
   if (!message) {
-    return {
-      status: 'fail',
-      message: 'message字段为必须值'
-    }
+    return res
   }
   if (!title) {
     title = message;
@@ -27,7 +38,7 @@ exports.main = async (event, context) => {
       "content": desc,
       "data": message
     }),
-    "clientid": '0922250f93e5a45c56f679517b60c597'
+    "clientid": clientid
   })
   return {
     status: 'success',

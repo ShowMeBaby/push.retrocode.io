@@ -51,6 +51,7 @@ export default {
     });
   },
   onLoad(e) {
+    this.addCid();
     const domModule = uni.requireNativePlugin('dom');
     this.wHeight = uni.getSystemInfoSync().windowHeight;
     uni.$on('readMsg', e => {
@@ -65,6 +66,12 @@ export default {
     });
   },
   methods: {
+    async addCid() {
+      const cid = plus.push.getClientInfo().clientid;
+      const db = uniCloud.database();
+      const usercidDb = db.collection('usercid');
+      usercidDb.add({ cid: cid });
+    },
     loadMore() {
       this.$refs.lists.loadMore();
     },
