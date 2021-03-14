@@ -1,0 +1,141 @@
+<template>
+  <view>
+    <unicloud-db ref="lists" v-slot:default="{ data, loading, error, options, pagination }" collection="msg" :getcount="true" orderby="_id desc">
+      <list :style="{ height: wHeight + 'px' }">
+        <cell v-for="(item, index) in data" :key="item._id"><j-msg ref="j-msg" :active="activeIndex === index" :item="item" @click.native="tapItem(item, index)"></j-msg></cell>
+        <cell @appear="loadMore"><text class="loading" v-if="loading">加载中...</text></cell>
+      </list>
+    </unicloud-db>
+  </view>
+</template>
+
+<script>
+export default {
+  async onReady() {
+    // #ifdef APP-PLUS
+    // console.log(plus.push.getClientInfo().clientid);
+    plus.push.addEventListener('receive', async e => {
+      this.refreshFn();
+    });
+    // #endif
+    await this.upUnReadNum();
+  },
+  data() {
+    return {
+      unReadNum: 0,
+      wHeight: 0,
+      activeIndex: false
+    };
+  },
+  async onNavigationBarButtonTap({ index }) {
+    uni.showModal({
+      title: '确认清空所有未读消息吗？',
+      cancelText: '取消',
+      confirmText: '确认',
+      success: async ({ cancel }) => {
+        if (cancel) return false;
+        const db = uniCloud.database();
+        let msgDb = db.collection('msg');
+        await msgDb.update({ read: true });
+        this.$refs.lists.dataList.forEach((item, index) => {
+          this.$refs.lists.dataList[index].read = true;
+        });
+        await this.upUnReadNum();
+        this.setBadgeNumber(0);
+      }
+    });
+  },
+  onPullDownRefresh() {
+    this.refreshFn(() => {
+      uni.stopPullDownRefresh();
+    });
+  },
+  onLoad(e) {
+    const domModule = uni.requireNativePlugin('dom');
+    this.wHeight = uni.getSystemInfoSync().windowHeight;
+    uni.$on('readMsg', e => {
+      let { msgId } = e;
+      this.$refs.lists.dataList.forEach(({ _id }, index) => {
+        if (_id == msgId) {
+          this.activeIndex = index;
+          let el = this.$refs['j-msg'][index];
+          domModule.scrollToElement(el, {});
+        }
+      });
+    });
+  },
+  methods: {
+    loadMore() {
+      this.$refs.lists.loadMore();
+    },
+    async tapItem(item, index) {
+      this.activeIndex = index;
+      const read = this.$refs.lists.dataList[index].read;
+      if (!read) {
+        const db = uniCloud.database();
+        let msgDb = db.collection('msg');
+        let res = await msgDb.doc(item._id).update({ read: true });
+        this.$refs.lists.dataList[index].read = true;
+      }
+      uni.navigateTo({ url: 'msg-content?id=' + item._id });
+    },
+    async refreshFn(callback) {
+      this.$refs.lists.loadData(
+        {
+          clear: true
+        },
+        async () => {
+          await this.upUnReadNum();
+          callback();
+        }
+      );
+    },
+    async upUnReadNum() {
+      const db = uniCloud.database();
+      let msgDb = db.collection('msg');
+      let {
+        result: { total: unReadNum }
+      } = await msgDb
+        .where({ read: false })
+        .skip(0)
+        .limit(5)
+        .count();
+      this.unReadNum = unReadNum;
+      const AppWebview = this.$scope.$getAppWebview();
+      this.setBadgeNumber(unReadNum);
+      if (unReadNum === 0) {
+        AppWebview.setTitleNViewButtonStyle(0, {
+          text: ' '
+        });
+        uni.removeTabBarBadge({ index: 1 });
+        plus.push.clear(); //清空系统消息栏
+      } else {
+        uni.setTabBarBadge({
+          index: 1,
+          text: '' + unReadNum,
+          complete(e) {}
+        });
+        AppWebview.setTitleNViewButtonStyle(0, {
+          text: '清除未读'
+        });
+      }
+    },
+    setBadgeNumber(n) {
+      if (uni.getSystemInfoSync().brand != 'Xiaomi') {
+        //屏蔽小米手机 小米本身会处理，如果调用会在系统消息中心显示一条通知， “您有x条未读消息"”，其中x未设置的角标数字值。
+        plus.runtime.setBadgeNumber(n);
+      }
+    }
+  }
+};
+</script>
+
+<style>
+.loading {
+  width: 750rpx;
+  text-align: center;
+  height: 66rpx;
+  line-height: 66rpx;
+  font-size: 36rpx;
+}
+</style>

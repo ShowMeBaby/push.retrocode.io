@@ -1,0 +1,132 @@
+<template>
+  <view class="j-root" :class="{ 'j-active': active }">
+    <image :src="item.avatarUrl || '/static/logo.png'" class="j-avatar" mode="aspectFill"></image>
+    <view class="j-box">
+      <view class="j-content">
+        <text class="j-title">{{ item.title }}</text>
+        <text class="j-time" v-if="item.timestamp">{{ timestampToTime(item.timestamp) }}</text>
+      </view>
+      <view class="j-content">
+        <text class="j-text">{{ item.content }}</text>
+        <text v-if="!item.read" class="read"></text>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+export default {
+  data() {
+    return {};
+  },
+  methods: {
+    //时间戳格式转月日时分秒
+    timestampToTime(nS) {
+      var date = new Date(parseInt(nS));
+      var mon = date.getMonth() + 1;
+      var day = date.getDate();
+      var hours = date.getHours();
+      var minu = date.getMinutes();
+      var sec = date.getSeconds();
+      var trMon = mon < 10 ? '0' + mon : mon;
+      var trDay = day < 10 ? '0' + day : day;
+      var trHours = hours < 10 ? '0' + hours : hours;
+      var trMinu = minu < 10 ? '0' + minu : minu;
+      var trSec = sec < 10 ? '0' + sec : sec;
+      return trMon + '-' + trDay + ' ' + trHours + ':' + trMinu + ':' + trSec;
+    }
+  },
+  props: {
+    active: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    item: {
+      type: Object,
+      default() {
+        return {
+          avatarUrl: 'https://img.cdn.aliyun.dcloud.net.cn/uni-app/uniCloud/uniCloud-run-function-1.png',
+          title: 'title',
+          timestamp: '234656453',
+          text: 'text',
+          num: '9'
+        };
+      }
+    }
+  }
+};
+</script>
+<style lang="scss" scoped>
+.j-root {
+  width: 750rpx;
+  padding: 20rpx;
+  flex-direction: row;
+  border-style: solid;
+  border-bottom-width: 1px;
+  border-color: #eeeeee;
+
+  background-color: #ffffff;
+  transition-property: background-color;
+  transition-duration: 0.3s;
+  transition-delay: 0.1s;
+  transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.j-active {
+  background-color: rgba(255, 255, 0, 0.01);
+  /* border-color: rgba(212, 0, 3, 0.5);
+	border-width: 1rpx;
+	border-style: solid; */
+}
+.j-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 20rpx;
+}
+.j-box {
+  flex-direction: column;
+  margin-left: 30rpx;
+  justify-content: space-around;
+}
+.j-content {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.j-title {
+  height: 30px;
+  line-height: 30px;
+  font-size: 36rpx;
+  width: 400rpx;
+  lines: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.j-time {
+  font-size: 26rpx;
+  color: #999999;
+  height: 30px;
+  line-height: 30px;
+}
+.j-text {
+  width: 560rpx;
+  lines: 1;
+  height: 20px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  font-size: 26rpx;
+  color: #999999;
+  overflow: hidden;
+}
+.read {
+  background-color: #dd524d;
+  color: #ffffff;
+  width: 20rpx;
+  height: 20rpx;
+  font-size: 24rpx;
+  text-align: center;
+  line-height: 40rpx;
+  border-radius: 100px;
+  text-overflow: ellipsis;
+}
+</style>

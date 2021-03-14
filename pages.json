@@ -1,0 +1,38 @@
+{
+  "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "消息中心",
+        "enablePullDownRefresh": true,
+        "app-plus": {
+          "titleNView": {
+            "buttons": [{
+              "float": "right",
+              "text": "清除未读",
+              "fontSize": "14px",
+              "iconWidth": "100px",
+              "color": "#999999",
+              "colorPressed": "#007AFF",
+              "width": "90px"
+            }]
+          }
+        }
+      }
+    }, {
+      "path": "pages/index/msg-content",
+      "style": {
+        "navigationBarTitleText": "通知内容",
+        "enablePullDownRefresh": false
+      }
+
+    }
+  ],
+
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  }
+}

@@ -1,0 +1,283 @@
+.parse /deep/ {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: Helvetica, sans-serif;
+  font-size: 16px;
+  color: #666;
+  line-height: 1.8;
+  overflow-x: hidden !important;
+  padding-left: 30upx;
+  padding-right: 30upx;
+}
+
+.parse /deep/ view {
+  word-break: hyphenate;
+}
+
+.parse /deep/ .inline {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.parse /deep/ div {
+  margin: 0;
+  padding: 0;
+}
+
+.parse /deep/ h1 {
+  color: #666;
+  font-size: 2em;
+  margin: 0.67em 0;
+  text-align: left;
+}
+
+.parse /deep/ h2 {
+  font-size: 1.5em;
+  margin: 0.83em 0;
+}
+
+.parse /deep/ h3 {
+  font-size: 1.17em;
+  margin: 1em 0;
+}
+
+.parse /deep/ h4 {
+  margin: 1.33em 0;
+}
+
+.parse /deep/ h5 {
+  font-size: 0.83em;
+  margin: 1.67em 0;
+}
+
+.parse /deep/ h6 {
+  font-size: 0.67em;
+  margin: 2.33em 0;
+}
+
+.parse /deep/ h1,
+.parse /deep/ h2,
+.parse /deep/ h3,
+.parse /deep/ h4,
+.parse /deep/ h5,
+.parse /deep/ h6,
+.parse /deep/ b,
+.parse /deep/ strong {
+  font-weight: bolder;
+}
+
+
+.parse /deep/ p {
+  margin: 1em;
+}
+
+.parse /deep/ i,
+.parse /deep/ cite,
+.parse /deep/ em,
+.parse /deep/ var,
+.parse /deep/ address {
+  font-style: italic;
+}
+
+.parse /deep/ pre,
+.parse /deep/ tt,
+.parse /deep/ code,
+.parse /deep/ kbd,
+.parse /deep/ samp {
+  font-family: monospace;
+}
+
+.parse /deep/ pre {
+  overflow: auto;
+  background: #f5f5f5;
+  padding: 16upx;
+  white-space: pre;
+  margin: 1em;
+}
+
+.parse /deep/ code {
+  display: inline;
+  background: #f5f5f5;
+}
+
+.parse /deep/ big {
+  font-size: 1.17em;
+}
+
+.parse /deep/ small,
+.parse /deep/ sub,
+.parse /deep/ sup {
+  font-size: 0.83em;
+}
+
+.parse /deep/ sub {
+  vertical-align: sub;
+}
+
+.parse /deep/ sup {
+  vertical-align: super;
+}
+
+.parse /deep/ s,
+.parse /deep/ strike,
+.parse /deep/ del {
+  text-decoration: line-through;
+}
+
+.parse /deep/ strong,
+.parse /deep/ s {
+  display: inline;
+}
+
+.parse /deep/ a {
+  color: deepskyblue;
+}
+
+.parse /deep/ video {
+  text-align: center;
+  margin: 22upx 0;
+}
+
+.parse /deep/ .video-video {
+  width: 100%;
+}
+
+.parse /deep/ img {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.parse /deep/ blockquote {
+  margin: 10upx 0;
+  padding: 22upx 0 22upx 22upx;
+  font-family: Courier, Calibri, "宋体";
+  background: #f5f5f5;
+  border-left: 6upx solid #dbdbdb;
+}
+
+.parse /deep/ blockquote p {
+  margin: 0;
+}
+
+.parse /deep/ ul,
+.parse /deep/ ol {
+  display: block;
+  margin: 1em 0;
+  padding-left: 33upx;
+}
+
+.parse /deep/ ol {
+  list-style-type: disc;
+}
+
+.parse /deep/ ol {
+  list-style-type: decimal;
+}
+
+.parse /deep/ ol>weixin-parse-template,
+.parse /deep/ ul>weixin-parse-template {
+  display: list-item;
+  align-items: baseline;
+  text-align: match-parent;
+}
+
+.parse /deep/ ol>li,
+.parse /deep/ ul>li {
+  display: list-item;
+  align-items: baseline;
+  text-align: match-parent;
+}
+
+.parse /deep/ ul ul,
+.parse /deep/ ol ul {
+  list-style-type: circle;
+}
+
+.parse /deep/ ol ol ul,
+.parse /deep/ ol ul ul,
+.parse /deep/ ul ol ul,
+.parse /deep/ ul ul ul {
+  list-style-type: square;
+}
+
+.parse /deep/ u {
+  text-decoration: underline;
+}
+
+.parse /deep/ .hide {
+  display: none;
+}
+
+.parse /deep/ del {
+  display: inline;
+}
+
+.parse /deep/ figure {
+  overflow: hidden;
+}
+
+.parse /deep/ table {
+  width: 100%;
+}
+
+.parse /deep/ thead,
+.parse /deep/ tfoot,
+.parse /deep/ tr {
+  display: flex;
+  flex-direction: row;
+}
+
+.parse /deep/ tr {
+  width: 100%;
+  display: flex;
+  border-right: 2upx solid #e0e0e0;
+  border-bottom: 2upx solid #e0e0e0;
+}
+
+.parse /deep/ th,
+.parse /deep/ td {
+  display: flex;
+  /* width: 750upx; */
+  overflow: auto;
+  flex: 1;
+  padding: 11upx;
+  border-left: 2upx solid #e0e0e0;
+}
+
+.parse /deep/ td:last {
+  border-top: 2upx solid #e0e0e0;
+}
+
+.parse /deep/ th {
+  background: #f0f0f0;
+  border-top: 2upx solid #e0e0e0;
+}
+
+.loading {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading_wrap {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+
+.loading_wrap .image {
+  width: 100px;
+  height: 100px;
+}
+
+.loading_wrap text {
+  font-size: 16px;
+  text-align: center;
+}
