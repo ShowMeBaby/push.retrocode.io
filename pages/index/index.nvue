@@ -2,8 +2,13 @@
   <view>
     <unicloud-db ref="lists" v-slot:default="{ data, loading, error, options, pagination }" collection="msg" :getcount="true" orderby="_id desc">
       <list :style="{ height: wHeight + 'px' }">
-        <cell v-for="(item, index) in data" :key="item._id"><j-msg ref="j-msg" :active="activeIndex === index" :item="item" @click.native="tapItem(item, index)"></j-msg></cell>
-        <cell @appear="loadMore"><text class="loading" v-if="loading">加载中...</text></cell>
+        <template v-for="(item, index) in data">
+          <cell :key="item._id"><j-msg ref="j-msg" :active="activeIndex === index" :item="item" @click.native="tapItem(item, index)"></j-msg></cell>
+        </template>
+        <cell @appear="loadMore">
+          <text class="loading" v-if="loading">加载中...</text>
+          <text class="loading" v-if="!loading">加载完成</text>
+        </cell>
       </list>
     </unicloud-db>
   </view>
@@ -13,7 +18,6 @@
 export default {
   async onReady() {
     // #ifdef APP-PLUS
-    // console.log(plus.push.getClientInfo().clientid);
     plus.push.addEventListener('receive', async e => {
       this.refreshFn();
     });
@@ -26,6 +30,23 @@ export default {
       wHeight: 0,
       activeIndex: false
     };
+  },
+  onLoad(e) {
+    this.addCid();
+    const domModule = uni.requireNativePlugin('dom');
+    const { statusBarHeight, windowHeight } = uni.getSystemInfoSync();
+    // 44是uniapp默认导航栏高度
+    this.wHeight = windowHeight - statusBarHeight - 44;
+    uni.$on('readMsg', e => {
+      let { msgId } = e;
+      this.$refs.lists.dataList.forEach(({ _id }, index) => {
+        if (_id == msgId) {
+          this.activeIndex = index;
+          let el = this.$refs['j-msg'][index];
+          domModule.scrollToElement(el, {});
+        }
+      });
+    });
   },
   async onNavigationBarButtonTap({ index }) {
     uni.showModal({
@@ -48,21 +69,6 @@ export default {
   onPullDownRefresh() {
     this.refreshFn(() => {
       uni.stopPullDownRefresh();
-    });
-  },
-  onLoad(e) {
-    this.addCid();
-    const domModule = uni.requireNativePlugin('dom');
-    this.wHeight = uni.getSystemInfoSync().windowHeight;
-    uni.$on('readMsg', e => {
-      let { msgId } = e;
-      this.$refs.lists.dataList.forEach(({ _id }, index) => {
-        if (_id == msgId) {
-          this.activeIndex = index;
-          let el = this.$refs['j-msg'][index];
-          domModule.scrollToElement(el, {});
-        }
-      });
     });
   },
   methods: {

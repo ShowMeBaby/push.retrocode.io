@@ -1,5 +1,5 @@
 {
-    "name" : "retrocodePush",
+    "name" : "retrocode-push",
     "appid" : "__UNI__E9B8300",
     "description" : "个人推送服务",
     "versionName" : "1.0.0",
@@ -11,7 +11,7 @@
         "nvueCompiler" : "uni-app",
         "compilerVersion" : 3,
         "splashscreen" : {
-            "alwaysShowBeforeRender" : true,
+            "alwaysShowBeforeRender" : false,
             "waiting" : true,
             "autoclose" : true,
             "delay" : 0
@@ -48,7 +48,7 @@
                     "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
                 ],
-                "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ]
+                "abiFilters" : [ "arm64-v8a" ]
             },
             /* ios打包配置 */
             "ios" : {},
@@ -103,7 +103,7 @@
         },
         "nativePlugins" : {},
         "uniStatistics" : {
-            "enable" : true
+            "enable" : false
         },
         "nvueLaunchMode" : ""
     },
