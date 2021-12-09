@@ -125,3 +125,9 @@ function endswith($string, $test) {
     if ($testlen > $strlen) return false;
     return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
 }
+
+function customString($string, $len = 50) {
+    $strlen = strlen($string);   
+    if ($strlen > $len) return substr($string, 0, $len);
+    return $string;
+}

@@ -1,6 +1,8 @@
 <?php
 require '../vendor/autoload.php';
 
+@include_once "../common.php";
+
 require_once("../sqlite.class.php");
 require_once("../env.class.php");
 use \retrocode\sqlite\sqliteDB;
@@ -44,6 +46,10 @@ function pushToSingleByCid(){
 
 function getParam($Title,$Content,$Payload){
 
+    // 超过长度会推送失败
+    $Title = customString($Title, 50);
+    $Content = customString($Content, 256);
+    $Payload = customString($Payload, 3072);
 
     $push = new GTPushRequest();
     $push->setRequestId(micro_time());
