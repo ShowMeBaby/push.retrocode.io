@@ -1,43 +1,38 @@
-# push.retrocode.io
+# 个人推送应用
 
-使用uniapp的unipush实现的个人推送服务程序
+这是一个使用uniapp的unipush服务搭建的个人推送App
 
-## 简介
+# App端
 
-因为unipush使用的是个推VIP版,我们不用再担心推送效率问题了.而且免费使用,省心省力.
+就两个页面,接了一个解析markdown的插件,直接看源码就好了不过多解释.
 
+# 服务端
 
-## 演示图片
+服务端使用原生php搭建,顺带熟悉下php框架的搭建流程
 
-![演示图片](https://gitee.com/retrocode/picture_bed/raw/master/image/20210314233902.png)
+> 个人使用,故采用sqlite做数据库,偶尔会发送database is locked,若二开注意尽量控制同时请求数.
 
-## 部署教程
+## App查询接口
 
-// TODO
+| 接口(POST)             | 描述         |
+| ---------------------- | ------------ |
+| api.php/push/savecid   | 提交设备CID  |
+| api.php/push/getlist   | 获取推送列表 |
+| api.php/push/unreadnum | 获取未读条数 |
+| api.php/push/allread   | 清除未读     |
+| api.php/push/getinfo   | 获取推送详情 |
 
-## 流程图：
+## 推送接口
 
-![UniPush流程图](https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/8ceb3f60-3b97-11eb-bd01-97bc1429a9ff.png)
+> 默认直接访问index.php既是推送接口(GET接口)
 
->注意这是原生支持端功能，必须使用正确的包名、证书、签名才能使用**
+| 参数    | 描述                                                         |
+| ------- | ------------------------------------------------------------ |
+| message | 推送内容,必填                                                |
+| title   | 内容标题,选填,若不带参数,则默认message为title                |
+| level   | 内容等级0-3,根据等级在APP端会有不同等级的提示颜色,选填,默认0 |
 
-## 目录结构：
+# License
 
-```bash
-├── cloudfunctions         #云函数目录
-|   │─── common            #公共模块
-|   |   │── config         #配置文件
-|   |   └── uni-push       #push核心代码模块
-│   └── pushDemo           #推送功能demo
-└── 根目录
-```
-
-## 使用流程：
-1. 开通并配置UniPush[详情](https://ask.dcloud.net.cn/article/35716)
-2. 将获取到的相关key填写到配置文件
-3. 通过自定义基座获取到某一台设备的[clientid](http://www.html5plus.org/doc/zh_cn/push.html#plus.push.getClientInfo)
-4. 修改pushDemo文件的clientid右键上传并运行即可体验
-
->注意：1.请打包app【建议用自定义基座】2.务必使用真机调试
-
-> 更多关于UniPush的文献参考：[UniPush使用指南](https://ask.dcloud.net.cn/article/35622)
+This project is licensed under the [MIT license](LICENSE).    
+Copyright (c) ShowMeBaby (retrocode@qq.com)

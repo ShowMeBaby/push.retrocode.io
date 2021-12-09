@@ -75,7 +75,7 @@ export default {
     font-size: 16px;
     color: #666;
     line-height: 1.8;
-    overflow-x: hidden !important;
+    overflow-x: scroll !important;
     padding-left: 30upx;
     padding-right: 30upx;
     // 代码高亮 由于嵌套导致APP端css无法应用,将css样式复制在此处

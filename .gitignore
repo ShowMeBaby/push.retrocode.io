@@ -1,2 +1,4 @@
 /unpackage
 /.hbuilderx
+/server/.env
+/server/push.db

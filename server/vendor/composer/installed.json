@@ -1,0 +1,51 @@
+[
+    {
+        "name": "getuilaboratory/getui-pushapi-php-client-v2",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/GetuiLaboratory/getui-pushapi-php-client-v2.git",
+            "reference": "255cc076624d049c0481d7172cd3c519ae7b07f6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/GetuiLaboratory/getui-pushapi-php-client-v2/zipball/255cc076624d049c0481d7172cd3c519ae7b07f6",
+            "reference": "255cc076624d049c0481d7172cd3c519ae7b07f6",
+            "shasum": "",
+            "mirrors": [
+                {
+                    "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                    "preferred": true
+                }
+            ]
+        },
+        "time": "2021-06-21T03:22:42+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                ""
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "getui",
+                "homepage": "https://www.getui.com/cn"
+            }
+        ],
+        "description": "getui php client V2",
+        "homepage": "https://www.getui.com/cn/",
+        "keywords": [
+            "GeTui",
+            "GetuiLaboratory",
+            "getui-pushapi-php-client",
+            "getui-pushapi-php-client-v2",
+            "pushapi"
+        ]
+    }
+]

@@ -1,20 +1,17 @@
 <template>
   <view>
-    <unicloud-db ref="lists" v-slot:default="{ data, loading, error, options, pagination }" collection="msg" :getcount="true" orderby="_id desc">
-      <list :style="{ height: wHeight + 'px' }">
-        <template v-for="(item, index) in data">
-          <cell :key="item._id"><j-msg ref="j-msg" :active="activeIndex === index" :item="item" @click.native="tapItem(item, index)"></j-msg></cell>
-        </template>
-        <cell @appear="loadMore">
-          <text class="loading" v-if="loading">加载中...</text>
-          <text class="loading" v-if="!loading">加载完成</text>
-        </cell>
-      </list>
-    </unicloud-db>
+    <template v-for="(item, index) in pushlist">
+      <view :key="item.ID"><j-msg ref="j-msg" :active="activeIndex === index" :item="item" @click.native="checkinfo(item, index)"></j-msg></view>
+    </template>
+    <view>
+      <text class="loading" v-if="loading">加载中...</text>
+      <text class="loading" v-if="!loading">加载完成</text>
+    </view>
   </view>
 </template>
 
 <script>
+import * as Api from '../../common/api.js';
 export default {
   async onReady() {
     // #ifdef APP-PLUS
@@ -22,122 +19,132 @@ export default {
       this.refreshFn();
     });
     // #endif
-    await this.upUnReadNum();
   },
   data() {
     return {
+      page: 0,
+      size: 20,
+      loading: false,
+      loadend: false,
+      pushlist: [],
       unReadNum: 0,
-      wHeight: 0,
       activeIndex: false
     };
   },
-  onLoad(e) {
-    this.addCid();
-    const domModule = uni.requireNativePlugin('dom');
-    const { statusBarHeight, windowHeight } = uni.getSystemInfoSync();
-    // 44是uniapp默认导航栏高度
-    this.wHeight = windowHeight - statusBarHeight - 44;
+  async onLoad(e) {
+    const _this = this;
+    await this.addCid();
+    await this.getlist();
     uni.$on('readMsg', e => {
       let { msgId } = e;
-      this.$refs.lists.dataList.forEach(({ _id }, index) => {
-        if (_id == msgId) {
-          this.activeIndex = index;
-          let el = this.$refs['j-msg'][index];
+      _this.pushlist.forEach(({ ID }, index) => {
+        if (ID == msgId) {
+          _this.activeIndex = index;
+          let el = _this.$refs['j-msg'][index];
+          // #ifdef APP-PLUS
+          const domModule = uni.requireNativePlugin('dom');
           domModule.scrollToElement(el, {});
+          // #endif
         }
       });
     });
   },
   async onNavigationBarButtonTap({ index }) {
+    const _this = this;
     uni.showModal({
       title: '确认清空所有未读消息吗？',
       cancelText: '取消',
       confirmText: '确认',
       success: async ({ cancel }) => {
         if (cancel) return false;
-        const db = uniCloud.database();
-        let msgDb = db.collection('msg');
-        await msgDb.update({ read: true });
-        this.$refs.lists.dataList.forEach((item, index) => {
-          this.$refs.lists.dataList[index].read = true;
-        });
-        await this.upUnReadNum();
-        this.setBadgeNumber(0);
+        await Api.allread({});
+        _this.activeIndex = false;
+        _this.pushlist
+          .filter(item => item.READ != true)
+          .forEach((item, index) => {
+            _this.pushlist[index].READ = true;
+          });
+        await _this.upUnReadNum();
       }
     });
+  },
+  onReachBottom() {
+    this.loadMore();
   },
   onPullDownRefresh() {
     this.refreshFn(() => {
       uni.stopPullDownRefresh();
     });
   },
+  async onShow() {
+    await this.upUnReadNum();
+  },
   methods: {
+    async getlist() {
+      const _this = this;
+      if (this.loadend) return false;
+      this.loading = true;
+      Api.getlist({ size: _this.size, page: _this.page }).then(data => {
+        _this.loadend = data.length == 0;
+        _this.$data.pushlist = [..._this.$data.pushlist, ...data];
+        _this.loading = false;
+      });
+    },
     async addCid() {
+      // #ifdef APP-PLUS
       const cid = plus.push.getClientInfo().clientid;
-      const db = uniCloud.database();
-      const usercidDb = db.collection('usercid');
-      usercidDb.add({ cid: cid });
+      Api.savecid({ cid: cid });
+      // #endif
     },
     loadMore() {
-      this.$refs.lists.loadMore();
+      this.page++;
+      this.getlist();
     },
-    async tapItem(item, index) {
+    async checkinfo(item, index) {
+      const _this = this;
       this.activeIndex = index;
-      const read = this.$refs.lists.dataList[index].read;
+      const read = this.pushlist[index].READ;
       if (!read) {
-        const db = uniCloud.database();
-        let msgDb = db.collection('msg');
-        let res = await msgDb.doc(item._id).update({ read: true });
-        this.$refs.lists.dataList[index].read = true;
+        _this.pushlist[index].READ = true;
       }
-      uni.navigateTo({ url: 'msg-content?id=' + item._id });
+      uni.navigateTo({ url: 'msg-content?id=' + item.ID });
     },
     async refreshFn(callback) {
-      this.$refs.lists.loadData(
-        {
-          clear: true
-        },
-        async () => {
-          await this.upUnReadNum();
-          callback();
-        }
-      );
+      const _this = this;
+      _this.page = 0;
+      _this.pushlist = [];
+      _this.activeIndex = false;
+      _this.loadend = false;
+      await _this.getlist();
+      await _this.upUnReadNum();
+      callback();
     },
     async upUnReadNum() {
-      const db = uniCloud.database();
-      let msgDb = db.collection('msg');
-      let {
-        result: { total: unReadNum }
-      } = await msgDb
-        .where({ read: false })
-        .skip(0)
-        .limit(5)
-        .count();
-      this.unReadNum = unReadNum;
-      const AppWebview = this.$scope.$getAppWebview();
-      this.setBadgeNumber(unReadNum);
-      if (unReadNum === 0) {
-        AppWebview.setTitleNViewButtonStyle(0, {
-          text: ' '
-        });
-        uni.removeTabBarBadge({ index: 1 });
-        plus.push.clear(); //清空系统消息栏
-      } else {
-        uni.setTabBarBadge({
-          index: 1,
-          text: '' + unReadNum,
-          complete(e) {}
-        });
-        AppWebview.setTitleNViewButtonStyle(0, {
-          text: '清除未读'
-        });
-      }
+      const _this = this;
+      Api.unreadnum({}).then(data => {
+        let unReadNum = data[0].NUM;
+        _this.unReadNum = unReadNum;
+        _this.setBadgeNumber(unReadNum);
+        // #ifdef APP-PLUS
+        const AppWebview = _this.$scope.$getAppWebview();
+        if (unReadNum === 0) {
+          AppWebview.setTitleNViewButtonStyle(0, { text: ' ' });
+          uni.removeTabBarBadge({ index: 1 });
+          plus.push.clear(); //清空系统消息栏
+        } else {
+          AppWebview.setTitleNViewButtonStyle(0, { text: '清除未读' });
+        }
+        // #endif
+      });
     },
     setBadgeNumber(n) {
+      uni.setNavigationBarTitle({ title: `推送中心${n > 0 ? '(' + n + ')' : ''}` });
+      // #ifdef APP-PLUS
       if (uni.getSystemInfoSync().brand != 'Xiaomi') {
         //屏蔽小米手机 小米本身会处理，如果调用会在系统消息中心显示一条通知， “您有x条未读消息"”，其中x未设置的角标数字值。
         plus.runtime.setBadgeNumber(n);
       }
+      // #endif
     }
   }
 };

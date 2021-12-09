@@ -1,0 +1,5 @@
+{
+    "require": {
+        "getuilaboratory/getui-pushapi-php-client-v2": "dev-master"
+    }
+}

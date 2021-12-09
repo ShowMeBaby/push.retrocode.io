@@ -1,11 +1,10 @@
 <script>
 export default {
   onLaunch: function() {
-    //console.log('App Launch')
     // #ifdef APP-PLUS
     //监听push推送通知
-    plus.push.addEventListener('receive', (data) => {
-      let {  title, content, payload } = data;
+    plus.push.addEventListener('receive', data => {
+      let { title, content, payload } = data;
       if (uni.getSystemInfoSync().platform != 'ios') {
         //如果type!='receive'是自己本地插件的push消息栏，“拦截”避免死循环'，安卓系统没有这个问题
         if (typeof payload != 'object') {
@@ -22,7 +21,6 @@ export default {
       if (typeof payload != 'object') {
         payload = JSON.parse(payload);
       }
-
       let pages = getCurrentPages();
       let currentWebview = pages[pages.length - 1].$getAppWebview();
       if (currentWebview.__uniapp_route != 'pages/index/index') {
@@ -32,12 +30,8 @@ export default {
     });
     // #endif
   },
-  onShow: function() {
-    //console.log('App Show')
-  },
-  onHide: function() {
-    //console.log('App Hide')
-  }
+  onShow: function() {},
+  onHide: function() {}
 };
 </script>
 

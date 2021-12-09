@@ -3,7 +3,7 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "消息中心",
+        "navigationBarTitleText": "推送中心",
         "enablePullDownRefresh": true,
         "app-plus": {
           "titleNView": {
@@ -22,7 +22,7 @@
     }, {
       "path": "pages/index/msg-content",
       "style": {
-        "navigationBarTitleText": "通知内容",
+        "navigationBarTitleText": "推送内容",
         "enablePullDownRefresh": false
       }
 
@@ -31,7 +31,7 @@
 
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
+    "navigationBarTitleText": "推送",
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   }
