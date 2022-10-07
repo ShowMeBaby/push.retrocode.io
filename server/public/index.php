@@ -26,7 +26,7 @@ function pushToSingleByCid(){
         echo '推送内容不能为空';
         exit;
     }
-    
+
     $Content = isset($_GET['message']) ? $_GET['message'] : 'test';
     $Title = isset($_GET['title']) ? $_GET['title'] : $Content;
     $Payload = isset($_GET['level']) ? $_GET['level'] : 0;
@@ -38,6 +38,7 @@ function pushToSingleByCid(){
     $push->setCid($cid);
     global $api;
     $pushresult = $api->pushApi()->pushToSingleByCid($push);
+    pushToDingTalkByWebhook($Title,$Content,$Payload);
     echo json_encode([
         'code' => $pushresult['code'],
         'message' => $pushresult['code'] == 0 ? '推送成功' : '推送失败'
@@ -104,4 +105,29 @@ function micro_time(){
     list($usec, $sec) = explode(" ", microtime());
     $time = ($sec . substr($usec, 2, 3));
     return $time;
+}
+
+function pushToDingTalkByWebhook($Title,$Content,$Payload) {
+    $data = [
+                'msgtype' => 'markdown',
+                'markdown' => [ 'title' => $Title, 'text' => $Content ],
+                'at' => [
+                        'atMobiles' => ['xxxxxxxxxxxxxxxxxxxxxxxxx'],
+                    ]
+            ];
+    $data_string = json_encode($data);
+    $remote_server = "https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxxxxxxxxx";
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $remote_server);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Content-Type: application/json;charset=utf-8'));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    // 线下环境不用开启curl证书验证, 未调通情况可尝试添加该代码
+    // curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    // curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    return $data;
 }
